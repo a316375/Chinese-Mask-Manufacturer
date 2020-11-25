@@ -18,6 +18,7 @@ import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import xyx.game.mask.R;
@@ -25,10 +26,8 @@ import xyx.game.mask.R;
 public class Main2Activity extends AppCompatActivity {
 
     // An activity reference from which the billing flow will be launched.
-    Activity activity = this;
+    Activity activity = Main2Activity.this;
 
-
-// Handle the result.
 
     private PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
         @Override
@@ -37,10 +36,7 @@ public class Main2Activity extends AppCompatActivity {
         }
     };
 
-    private BillingClient billingClient = BillingClient.newBuilder(activity)
-            .setListener(purchasesUpdatedListener)
-            .enablePendingPurchases()
-            .build();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +44,20 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
 
 
+        final Button button=findViewById(R.id.button);
+
+        final BillingClient billingClient = BillingClient.newBuilder(activity)
+                .setListener(purchasesUpdatedListener)
+                .enablePendingPurchases()
+                .build();
+
         billingClient.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingSetupFinished(BillingResult billingResult) {
                 if (billingResult.getResponseCode() ==  BillingClient.BillingResponseCode.OK) {
                     // The BillingClient is ready. You can query purchases here.
+                    button.setText("gggggg");
+
                 }
             }
             @Override
@@ -63,49 +68,63 @@ public class Main2Activity extends AppCompatActivity {
         });
 
 
-        //3
-        List<String> skuList = new ArrayList<>();
-        skuList.add("premium_upgrade");
-        skuList.add("gas");
-        final SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
-        params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
-        billingClient.querySkuDetailsAsync(params.build(),
-                new SkuDetailsResponseListener() {
-                    @Override
-                    public void onSkuDetailsResponse(BillingResult billingResult,
-                                                     List<SkuDetails> skuDetailsList) {
-                        // Process the result.
-                        // Retrieve a value for "skuDetails" by calling querySkuDetailsAsync().
-                        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                                .setSkuDetails(skuDetailsList.get(0))
-                                .build();
-                        int responseCode = billingClient.launchBillingFlow(activity, billingFlowParams).getResponseCode();
-
-                    }
-                });
 
 
 
 
 
-        Button button=findViewById(R.id.button);
+
+
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+                //3
+                final List<String> skuList = new ArrayList<> ();
+                skuList.add("vip");
+                skuList.add("vip2");
+                skuList.add("vip3");
+                skuList.add("vip999");
+
+                SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+                params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
                 billingClient.querySkuDetailsAsync(params.build(),
                         new SkuDetailsResponseListener() {
                             @Override
                             public void onSkuDetailsResponse(BillingResult billingResult,
                                                              List<SkuDetails> skuDetailsList) {
                                 // Process the result.
-                                // Retrieve a value for "skuDetails" by calling querySkuDetailsAsync().
-                                BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                                        .setSkuDetails(skuDetailsList.get(0))
-                                        .build();
-                                int responseCode = billingClient.launchBillingFlow(activity, billingFlowParams).getResponseCode();
+                                button.setText(BillingClient.BillingResponseCode.OK+"="+billingResult.getResponseCode());
+//
+//                                if (skuDetailsList==null){button.setText("null");}
+                                if (billingResult.getResponseCode()== BillingClient.BillingResponseCode.OK&&
+                                skuList!=null){
+
+
+                                    for (SkuDetails skuDetails:skuDetailsList){
+                                        String name=skuDetails.getTitle();
+                                        String sku=skuDetails.getSku();
+                                        String price=skuDetails.getPrice();
+                                        System.out.println("--"+name);
+
+                                        button.setText(sku+""+price);
+                                        // Retrieve a value for "skuDetails" by calling querySkuDetailsAsync().
+                                        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                                                .setSkuDetails(skuDetails) .build();
+                                        int responseCode = billingClient.launchBillingFlow(activity, billingFlowParams).getResponseCode();
+
+// Handle the result.
+                                    }
+
+
+                                }
 
                             }
                         });
+
+
             }
         });
     }
