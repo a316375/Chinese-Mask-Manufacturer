@@ -10,7 +10,7 @@ public class HomeViewModel extends ViewModel {
 
     public HomeViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("Chinese mask manufacturer");
+        mText.setValue("This is Homepage");
     }
 
     public LiveData<String> getText() {

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1074645256240",
+    "firebase_url": "https://free-mi-default-rtdb.firebaseio.com",
+    "project_id": "free-mi",
+    "storage_bucket": "free-mi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074645256240:android:d297ec3475c5e7df6545f5",
+        "android_client_info": {
+          "package_name": "xyx.game.mask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1074645256240-3gv50dt1rf9uher9qmrnd7qpu3d3kmuu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "xyx.game.mask",
+            "certificate_hash": "f26275f4226a9658e803bf8ba57486a52ec2c4b1"
+          }
+        },
+        {
+          "client_id": "1074645256240-7m9s2bj1ta8vebebip0mbqfa4m39o77a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMvicpGhBcwkX3IEmQMfnW9E0Ta-PHh0U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1074645256240-7m9s2bj1ta8vebebip0mbqfa4m39o77a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

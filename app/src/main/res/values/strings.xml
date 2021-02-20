@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Chinese-Mask-Manufacturer</string>
+    <string name="app_name">Free-MI</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Chinese Mask Manufacturer</string>
+    <string name="nav_header_title">Free marriage introduction</string>
     <string name="nav_header_subtitle">Let businessmen around the world know the Chinese market </string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
