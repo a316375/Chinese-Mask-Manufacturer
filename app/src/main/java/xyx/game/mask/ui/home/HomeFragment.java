@@ -100,12 +100,12 @@ public class HomeFragment extends Fragment {
                         Integer year = ds.child("year").getValue(Integer.class);
                         Log.v("--Tag", key+"--"+i);
 
-                        if (new Random().nextInt(3)==1){
+//                        if (new Random().nextInt(3)==1){
                             Planet   planet = new Planet(key, id, year, times);
                             planetArrayList.add(planet);
 
                             i++;
-                        }
+//                        }
 
 
                     }
