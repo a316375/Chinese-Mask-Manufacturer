@@ -22,6 +22,7 @@
     <string name="click">click to set</string>
     <string name="Contact_details">Contact_details</string>
     <string name="Instructions">Instructions:\n You can fill in the ID number of common social software. In order to prevent phone harassment, it is recommended that you do not fill in the phone number directly.\n You can also fill in your own advantage. The limit is 500 words.\n This information will be stored in your personal database for easy publishing and use</string>
+    <string name="dialogmessge">It can be published once a day and will be automatically deleted when the number of views reaches the limit.</string>
     <!-- Strings used for fragments for navigation -->
 
 

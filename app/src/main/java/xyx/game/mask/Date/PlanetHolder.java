@@ -30,9 +30,9 @@ public class PlanetHolder extends RecyclerView.ViewHolder {
 
     public void setDetails(Planet planet) {
         txtName.setText(planet.getPlanetName());
-        txtDistance.setText(String.format(Locale.US, "Distance from Sun : %d Million KM", planet.getDistanceFromSun()));
-        txtGravity.setText(String.format(Locale.US, "Surface Gravity : %d N/kg", planet.getGravity()));
-        txtDiameter.setText(String.format(Locale.US, "Diameter : %d KM", planet.getDiameter()));
+        txtDistance.setText(String.format(Locale.US, "Announced Date: %d ", planet.getDistanceFromSun()));
+        txtGravity.setText(String.format(Locale.US, "Year of Birth: %d ", planet.getGravity()));
+        txtDiameter.setText(String.format(Locale.US, "Remaining Times: %d ", planet.getDiameter()));
     }
 
 

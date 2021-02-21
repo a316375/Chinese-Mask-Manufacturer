@@ -5,7 +5,9 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Html;
@@ -13,6 +15,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
@@ -26,7 +29,11 @@ import xyx.game.mask.R;
 public class MonthYearPickerDialog extends DialogFragment  implements DatePickerDialog.OnDateSetListener{
 
     private static final int MAX_YEAR = 2099;
+    Button button;
 
+    public MonthYearPickerDialog(Button button) {
+        this.button = button;
+    }
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -44,7 +51,10 @@ public class MonthYearPickerDialog extends DialogFragment  implements DatePicker
         monthPicker.setMaxValue(12);
         monthPicker.setValue(cal.get(Calendar.MONTH) + 1);
 
-        int year = cal.get(Calendar.YEAR);
+//        int year = cal.get(Calendar.YEAR);
+        SharedPreferences sharedpreferences = getActivity().getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
+        Integer key2 = sharedpreferences.getInt("key2", 1980);
+        int year = key2;
         yearPicker.setMinValue(1900);
         yearPicker.setMaxValue(3500);
         yearPicker.setValue(year);
@@ -69,5 +79,6 @@ public class MonthYearPickerDialog extends DialogFragment  implements DatePicker
 
 
         Log.v("Tag","+"+year);
+        button.setText(""+year);
     }
 }

@@ -3,7 +3,9 @@ package xyx.game.mask;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,8 +22,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.Nullable;
 
+import xyx.game.mask.Obj.User;
 import xyx.game.mask.Tool.IntentTool;
 
 public class LoginActivity extends AppCompatActivity {
@@ -73,8 +81,14 @@ public class LoginActivity extends AppCompatActivity {
             //登陆成功
             Log.i("a user is logged in: ",user.getEmail());
 
-            IntentTool.startActivity(this,SettingActivity.class);
-            finish();
+            StartIN();
+
+
+
+
+
+
+
 //            string=user.getUid();
 //            IntentUtils.startActivity(MyActivity.this,MainMenuActivity.class,new Info().withId(string));
 //            finish();
@@ -86,6 +100,57 @@ public class LoginActivity extends AppCompatActivity {
             // findViewById(R.id.button1).setVisibility(View.GONE);
         }
 
+
+    }
+
+    //进行判断
+    private void StartIN() {
+        FirebaseAuth instance = FirebaseAuth.getInstance();
+        String email = instance.getCurrentUser().getEmail();
+        final String uid = instance.getUid();
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("User");//男人
+        ( (DatabaseReference) myRef.child(uid)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null) {
+                    Log.v("Tag---",dataSnapshot.toString());
+                   // int followersCount = dataSnapshot.getValue(Integer.class);
+                    final User user=dataSnapshot.getValue(User.class);
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SharedPreferences sharedpreferences = getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedpreferences.edit();
+                            editor.putInt("key1", user.getGender());
+                            editor.putInt("key2", user.getYear());
+                            editor.putString("key3", user.getString());
+                            editor.commit();
+
+                        }
+                    }).start();
+
+
+
+
+
+                    IntentTool.startActivity(LoginActivity.this,MainActivity.class);
+                    finish();
+                    //put value in view;
+                } else  {
+                    IntentTool.startActivity(LoginActivity.this,SettingActivity.class);
+                    finish();
+                    //put 0 in view
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 

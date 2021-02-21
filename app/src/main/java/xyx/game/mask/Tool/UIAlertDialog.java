@@ -1,15 +1,41 @@
 package xyx.game.mask.Tool;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.view.ContextThemeWrapper;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 
 import xyx.game.mask.R;
-public class UIAlertDialog {}
+public class UIAlertDialog {
+
+
+    public static AlertDialog showDialogA(Context context) {
+
+        //Creating dialog box
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.NoActionBar));
+        View dialogView = View.inflate(context, R.layout.send_dialog, null);
+//        ImageView iv_gif = dialogView.findViewById(R.id.iv_gif);
+//        dialogView.findViewById(R.id.tv_loading).setVisibility(View.GONE);
+//        Glide.with(context).load(R.drawable.fb01).into(iv_gif);
+        builder.setView(dialogView);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.setCancelable(false);
+//       alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 400);
+//        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+
+//        UIHide.hideNavKey((Activity) context, alertDialog);
+
+
+        return alertDialog;
+
+
+    }
+
+}
 //public class UIAlertDialog {
 //    public static AlertDialog showDialogA(Context context) {
 //
