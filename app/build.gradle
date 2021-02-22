@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'org.greenrobot.greendao' // apply plugin
 
 android {
     compileSdkVersion 29
@@ -39,6 +40,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     implementation 'com.varunjohn1990.libraries:iosdialogs4android:2.0.1'
+    implementation 'org.greenrobot:greendao:3.3.0' // add library
 
     def billing_version = "3.0.0"
 

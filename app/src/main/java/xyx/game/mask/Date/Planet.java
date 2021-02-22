@@ -2,14 +2,15 @@ package xyx.game.mask.Date;
 
 public class Planet {
     private String planetName;
-    private int distanceFromSun;
+    private Long distanceFromSun;
     private int gravity;
-    private int diameter;
-    public Planet(String planetName, int distanceFromSun, int gravity, int diameter) {
+    private int diameter;private String info;
+    public Planet(String planetName, Long distanceFromSun, int gravity, int diameter,String info) {
         this.planetName = planetName;
         this.distanceFromSun = distanceFromSun;
         this.gravity = gravity;
         this.diameter = diameter;
+        this.info=info;
     }
     public String getPlanetName() {
         return planetName;
@@ -17,10 +18,10 @@ public class Planet {
     public void setPlanetName(String planetName) {
         this.planetName = planetName;
     }
-    public int getDistanceFromSun() {
+    public Long getDistanceFromSun() {
         return distanceFromSun;
     }
-    public void setDistanceFromSun(int distanceFromSun) {
+    public void setDistanceFromSun(Long distanceFromSun) {
         this.distanceFromSun = distanceFromSun;
     }
     public int getGravity() {
@@ -34,5 +35,13 @@ public class Planet {
     }
     public void setDiameter(int diameter) {
         this.diameter = diameter;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 }

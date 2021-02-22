@@ -1,6 +1,7 @@
 package xyx.game.mask.Date;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +25,16 @@ public class PlanetAdapter extends RecyclerView.Adapter<PlanetHolder> {
     @Override
     public PlanetHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(xyx.game.mask.R.layout.layout_home_item, parent, false);
-        return new PlanetHolder(view);
+
+        return new PlanetHolder(view,this);
     }
 
     @Override
     public void onBindViewHolder(@NonNull PlanetHolder holder, int position) {
         Planet planet = planets.get(position);
         holder.setDetails(planet);
+
+
     }
 
     @Override
@@ -38,5 +42,9 @@ public class PlanetAdapter extends RecyclerView.Adapter<PlanetHolder> {
         return planets.size();
     }
 
-
+    public void removeItem(int position){
+        if (position==-1)return;
+        planets.remove(position);
+        notifyItemRemoved(position);
+    }
 }

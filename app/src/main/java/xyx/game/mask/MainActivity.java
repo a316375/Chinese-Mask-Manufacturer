@@ -31,6 +31,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.Nullable;
 import com.varunjohn1990.iosdialogs4android.IOSDialog;
@@ -54,6 +55,8 @@ import java.util.List;
 import java.util.Map;
 
 import xyx.game.mask.Obj.A_Obj;
+import xyx.game.mask.Obj.Num;
+import xyx.game.mask.Obj.User;
 import xyx.game.mask.Tool.IntentTool;
 import xyx.game.mask.Tool.TimeSave;
 import xyx.game.mask.Tool.UIAlertDialog;
@@ -98,7 +101,11 @@ public class MainActivity extends AppCompatActivity {
         navUsername.setText(navUsername.getText().toString()+"\n@"+currentDateTimeString);
 
 
-
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+////        DatabaseReference myRef = database.getReference("Male");//男人
+//    DatabaseReference myRef2 = database.getReference("Female");
+//    myRef2.removeValue();
+        StartIN();
 //        FirebaseDatabase database = FirebaseDatabase.getInstance();
 //        DatabaseReference myRef = database.getReference("Male");//男人
 //        DatabaseReference myRef2 = database.getReference("Female");
@@ -148,8 +155,8 @@ public class MainActivity extends AppCompatActivity {
     private void showDialog() {
         List<IOSDialogButton> iosDialogButtons = new ArrayList<>();
         iosDialogButtons.add(new IOSDialogButton(1, "Show 10 Times-(Free)", false, IOSDialogButton.TYPE_POSITIVE));
-        iosDialogButtons.add(new IOSDialogButton(2, "Show 100 Times-(AD Reward)"));
-        iosDialogButtons.add(new IOSDialogButton(3, "Show 1000 Times-(Pay Money)", false, IOSDialogButton.TYPE_NEGATIVE));
+        iosDialogButtons.add(new IOSDialogButton(2, "Show 20 Times-(AD Reward)"));
+        iosDialogButtons.add(new IOSDialogButton(3, "Show 100 Times-(Pay Money)", false, IOSDialogButton.TYPE_NEGATIVE));
 
         new IOSDialog.Builder(MainActivity.this)
                 .title("Post My Message")              // String or String Resource ID
@@ -166,15 +173,15 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, "Show 10 Times-(Free)", Toast.LENGTH_SHORT).show();
                                 break;
                             case 2:
-                                sendToShow(100);
-                                Toast.makeText(MainActivity.this, "Show 100 Times-(AD reward)", Toast.LENGTH_SHORT).show();
+                                sendToShow(20);
+                                Toast.makeText(MainActivity.this, "Show 20 Times-(AD reward)", Toast.LENGTH_SHORT).show();
                                 break;
                             case 3:
-                                sendToShow(1000);
-//                                for (int i = 0; i <10000; i++) {
+                                sendToShow(100);
+//                                for (int i = 0; i <100; i++) {
 //                                    TestViod(i);
 //                                }
-                                Toast.makeText(MainActivity.this, "Show 1000 Times-(Pay Money)", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "Show 100 Times-(Pay Money)", Toast.LENGTH_SHORT).show();
                                 break;
                         }
                     }
@@ -202,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             FirebaseAuth instance = FirebaseAuth.getInstance();
-            String email = String.valueOf(TimeSave.Start_Zieo_Time());
+            Long id = Long.valueOf(TimeSave.Start_Zieo_Time());
             String uid = instance.getUid();
 
 
@@ -210,8 +217,9 @@ public class MainActivity extends AppCompatActivity {
             DatabaseReference myRef = database.getReference(leibie);//男人/女人
 
 //        myRef.child("Messge").setValue("122555465");
-            A_Obj a_obj=new A_Obj(key3,i,email,key2,key1);
+            A_Obj a_obj=new A_Obj(key3,i,id,key2,key1);
             myRef.child(uid+i).setValue(a_obj);
+            myRef.child(uid+i).child("id").setValue(ServerValue.TIMESTAMP);
 
         }else {
             IntentTool.startActivity(MainActivity.this,SettingActivity.class);
@@ -225,13 +233,70 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void sendToShow(int i) {
+    private void StartIN() {
+        FirebaseAuth instance = FirebaseAuth.getInstance();
+        //String email = instance.getCurrentUser().getEmail();
+        final String uid = instance.getUid();
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("User");//男人
+        ( (DatabaseReference) myRef.child(uid)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null) {
+                    Log.v("Tag---",dataSnapshot.toString());
+                    // int followersCount = dataSnapshot.getValue(Integer.class);
+                    final User user=dataSnapshot.getValue(User.class);
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SharedPreferences sharedpreferences = getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedpreferences.edit();
+                            editor.putInt("key1", user.getGender());
+                            editor.putInt("key2", user.getYear());
+                            editor.putString("key3", user.getString());
+                            editor.commit();
+
+                        }
+                    }).start();
+
+
+
+
+
+
+                    //put value in view;
+                } else  {
+                    IntentTool.startActivity(MainActivity.this,SettingActivity.class);
+                    finish();
+                    //put 0 in view
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+
+
+
+
+
+
+
+
+    private void sendToShow(final int i) {
         SharedPreferences sharedpreferences = getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
 
 
-        Integer key1 = sharedpreferences.getInt("key1", -1);
-        Integer key2 = sharedpreferences.getInt("key2", 0);
-        String key3 = sharedpreferences.getString("key3", "");
+        final Integer key1 = sharedpreferences.getInt("key1", -1);
+        final Integer key2 = sharedpreferences.getInt("key2", 0);
+        final String key3 = sharedpreferences.getString("key3", "");
 
 
 
@@ -242,16 +307,42 @@ public class MainActivity extends AppCompatActivity {
 
 
             FirebaseAuth instance = FirebaseAuth.getInstance();
-            String email = String.valueOf(TimeSave.Start_Zieo_Time());
-            String uid = instance.getUid();
+            final Long id = Long.valueOf(TimeSave.Start_Zieo_Time());
+
+            final String uid =  instance.getUid();
 
 
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference(leibie);//男人/女人
+            final DatabaseReference myRef = database.getReference(leibie);//男人/女人
+
+
+
+            final DatabaseReference num = database.getReference(leibie+"Num");//拿到排队号码
+
+             //num.setValue(new Num((long) 0));
+
+            num.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Num value = snapshot.getValue(Num.class);
+                    if (value.getNum()>=Long.MAX_VALUE/10)value.setNum(1L);
+                    num.setValue(new Num(value.getNum()+1));
+                    A_Obj a_obj=new A_Obj(key3,i,id,key2,key1);
+                    //Log.v("-------",String.valueOf(value));
+                    myRef.child(String.valueOf(value.getNum())+uid.substring(0,8)).setValue(a_obj);
+                    myRef.child(String.valueOf(value.getNum())+uid.substring(0,8)).child("id").setValue(ServerValue.TIMESTAMP);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
 
 //        myRef.child("Messge").setValue("122555465");
-            A_Obj a_obj=new A_Obj(key3,i,email,key2,key1);
-            myRef.child(uid).setValue(a_obj);
+
 
         }else {
             IntentTool.startActivity(MainActivity.this,SettingActivity.class);

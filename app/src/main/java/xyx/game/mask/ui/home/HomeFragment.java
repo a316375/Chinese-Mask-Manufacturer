@@ -63,6 +63,7 @@ public class HomeFragment extends Fragment {
 
 
 
+
         return root;
     }
 
@@ -81,30 +82,33 @@ public class HomeFragment extends Fragment {
         if (key1==1)leibie="Male";
 
 
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(leibie);//男人
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener(){
+        //只能读取20条
+        myRef.orderByKey().limitToFirst(20).addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue()!=null)
                 {
                     Iterable<DataSnapshot> children = snapshot.getChildren();
-                    int i=0;
+
                     for (DataSnapshot ds:children){
 
-                        if (i>=50)break;
+
                         String key = ds.getKey();
-                        Integer id = Integer.valueOf(ds.child("id").getValue(String.class));
+                        Long id = Long.valueOf(ds.child("id").getValue(Long.class));
                         Integer times = ds.child("times").getValue(Integer.class);
                         Integer year = ds.child("year").getValue(Integer.class);
-                        Log.v("--Tag", key+"--"+i);
+                        String info = ds.child("info").getValue(String.class);
+
 
 //                        if (new Random().nextInt(3)==1){
-                            Planet   planet = new Planet(key, id, year, times);
+                            Planet   planet = new Planet(key, id, year, times,info);
                             planetArrayList.add(planet);
 
-                            i++;
+
 //                        }
 
 

@@ -23,8 +23,10 @@ import android.widget.Toast;
 ;import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
 import java.sql.Time;
+import java.util.Map;
 
 import xyx.game.mask.Obj.User;
 import xyx.game.mask.Tool.IntentTool;
@@ -145,10 +147,11 @@ public class SettingActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),email+uid+"\n"+time,Toast.LENGTH_LONG).show();
 
 
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("User");//男人
         myRef.child(uid).setValue(user);
-
+        myRef.child(uid).child("time").setValue(ServerValue.TIMESTAMP);
 
         new Thread(new Runnable() {
             @Override

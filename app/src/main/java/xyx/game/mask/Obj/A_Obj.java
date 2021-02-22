@@ -3,11 +3,11 @@ package xyx.game.mask.Obj;
 public class A_Obj {
     public A_Obj() {}
 
-    private String Info,ID;
+    private String Info;private Long ID;
     private Integer Times,Year,Gender;
 
 
-    public A_Obj(String info, Integer times, String ID, Integer year, Integer gender) {
+    public A_Obj(String info, Integer times, Long ID, Integer year, Integer gender) {
         Info = info;
         Times = times;
         this.ID = ID;
@@ -34,11 +34,11 @@ public class A_Obj {
         Info = info;
     }
 
-    public String getID() {
+    public Long getID() {
         return ID;
     }
 
-    public void setID(String ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 

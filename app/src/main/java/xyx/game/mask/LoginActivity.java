@@ -81,10 +81,11 @@ public class LoginActivity extends AppCompatActivity {
             //登陆成功
             Log.i("a user is logged in: ",user.getEmail());
 
-            StartIN();
+            //StartIN();
 
 
-
+            IntentTool.startActivity(LoginActivity.this,MainActivity.class);
+            finish();
 
 
 

@@ -1,4 +1,4 @@
-package xyx.game.mask.M2;
+package xyx.game.mask.Activity2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,7 +18,6 @@ import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import xyx.game.mask.R;
