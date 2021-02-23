@@ -18,6 +18,7 @@ public class GalleryFragment extends Fragment {
 
     private GalleryViewModel galleryViewModel;
 
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         galleryViewModel =
@@ -27,9 +28,12 @@ public class GalleryFragment extends Fragment {
         galleryViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+//                textView.setText(s);
+                textView.setText(getContext().getResources().getString(R.string.waitting)+getContext().getResources().getString(R.string.rule));
             }
         });
+
+
         return root;
     }
 }

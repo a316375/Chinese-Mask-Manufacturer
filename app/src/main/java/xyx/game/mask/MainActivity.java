@@ -1,8 +1,10 @@
 package xyx.game.mask;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -39,6 +41,7 @@ import com.varunjohn1990.iosdialogs4android.IOSDialogButton;
 import com.varunjohn1990.iosdialogs4android.IOSDialogMultiOptionsListeners;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -47,19 +50,32 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import xyx.game.mask.Obj.A_Obj;
 import xyx.game.mask.Obj.Num;
+import xyx.game.mask.Obj.Today;
 import xyx.game.mask.Obj.User;
 import xyx.game.mask.Tool.IntentTool;
 import xyx.game.mask.Tool.TimeSave;
 import xyx.game.mask.Tool.UIAlertDialog;
+import xyx.game.mask.Tool.UIThead;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -101,11 +117,14 @@ public class MainActivity extends AppCompatActivity {
         navUsername.setText(navUsername.getText().toString()+"\n@"+currentDateTimeString);
 
 
+
+
+
 //        FirebaseDatabase database = FirebaseDatabase.getInstance();
 ////        DatabaseReference myRef = database.getReference("Male");//男人
 //    DatabaseReference myRef2 = database.getReference("Female");
 //    myRef2.removeValue();
-        StartIN();
+         StartIN();
 //        FirebaseDatabase database = FirebaseDatabase.getInstance();
 //        DatabaseReference myRef = database.getReference("Male");//男人
 //        DatabaseReference myRef2 = database.getReference("Female");
@@ -152,7 +171,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
+
+
+
+
+
+
+
     private void showDialog() {
+
+
         List<IOSDialogButton> iosDialogButtons = new ArrayList<>();
         iosDialogButtons.add(new IOSDialogButton(1, "Show 10 Times-(Free)", false, IOSDialogButton.TYPE_POSITIVE));
         iosDialogButtons.add(new IOSDialogButton(2, "Show 20 Times-(AD Reward)"));
@@ -355,9 +385,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 // ...
-
-
-
 
 
 

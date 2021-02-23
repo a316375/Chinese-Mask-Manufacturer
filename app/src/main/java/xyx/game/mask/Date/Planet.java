@@ -5,12 +5,14 @@ public class Planet {
     private Long distanceFromSun;
     private int gravity;
     private int diameter;private String info;
-    public Planet(String planetName, Long distanceFromSun, int gravity, int diameter,String info) {
+    private boolean isRead;
+    public Planet(String planetName, Long distanceFromSun, int gravity, int diameter,String info,boolean isRead) {
         this.planetName = planetName;
         this.distanceFromSun = distanceFromSun;
         this.gravity = gravity;
         this.diameter = diameter;
         this.info=info;
+        this.isRead=isRead;
     }
     public String getPlanetName() {
         return planetName;
@@ -43,5 +45,13 @@ public class Planet {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
     }
 }

@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -144,7 +145,7 @@ public class SettingActivity extends AppCompatActivity {
                 Integer.valueOf(click.getText().toString()),
                 editText.getText().toString(),TimeSave.Start_Zieo_Time(),email);
         long time = TimeSave.Start_Zieo_Time();
-        Toast.makeText(getApplicationContext(),email+uid+"\n"+time,Toast.LENGTH_LONG).show();
+       // Toast.makeText(getApplicationContext(),email+uid+"\n"+time,Toast.LENGTH_LONG).show();
 
 
 
@@ -189,4 +190,12 @@ public class SettingActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode== KeyEvent.KEYCODE_BACK) {//返回键
+            return false;
+
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

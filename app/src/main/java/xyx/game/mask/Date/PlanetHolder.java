@@ -3,11 +3,14 @@ package xyx.game.mask.Date;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -15,11 +18,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.varunjohn1990.iosdialogs4android.IOSDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import xyx.game.mask.GreenDao.DaoSession;
+import xyx.game.mask.GreenDao.GreenDaoApplication;
+import xyx.game.mask.GreenDao.Users;
+import xyx.game.mask.GreenDao.UsersDao;
 import xyx.game.mask.R;
 import xyx.game.mask.SettingActivity;
 import xyx.game.mask.Tool.IntentTool;
@@ -27,8 +35,15 @@ import xyx.game.mask.Tool.UIThead;
 
 public class PlanetHolder extends RecyclerView.ViewHolder {
     private TextView txtName, txtDistance, txtGravity, txtDiameter;
+    private ImageView imageView;
     private Planet planet;
     private PlanetAdapter planetAdapter;
+
+    private UsersDao usersDao;
+
+
+
+
     public PlanetHolder(final View itemView, final PlanetAdapter planetAdapter) {
         super(itemView);
         this.planetAdapter=planetAdapter;
@@ -36,24 +51,78 @@ public class PlanetHolder extends RecyclerView.ViewHolder {
         txtDistance = itemView.findViewById(R.id.textView2);
         txtGravity = itemView.findViewById(R.id.textView3);
         txtDiameter = itemView.findViewById(R.id.textView1);
+        imageView=itemView.findViewById(R.id.imageView);
+
+
+
+        DaoSession daoSession = ((GreenDaoApplication)((Activity)itemView.getContext()).getApplication()).getDaoSession();
+        usersDao = daoSession.getUsersDao();
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
+                planetAdapter.upRead(getAdapterPosition());
+
+//
+//                UIThead.runInSubThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        DelViod(planet.getPlanetName(),itemView.getContext());
+//                    }
+//                });
+
                 UIThead.runInSubThread(new Runnable() {
                     @Override
                     public void run() {
-                        DelViod(planet.getPlanetName(),itemView.getContext());
+                        Users user = usersDao.queryBuilder() .where(UsersDao.Properties.Id.eq(planet.getPlanetName())).build().unique();
+                        user.setIsread(true);
+                        Log.v("------",user.getId());
+                        //String id, int Gender, int Year, String info, long time, boolean isread
+                    usersDao.update(new Users(user.getId(),user.getGender(),user.getYear(),user.getInfo(),user.getTime(),true));
+                   //usersDao.save(user);
                     }
                 });
 
-                planetAdapter.removeItem(getAdapterPosition());
-                Toast.makeText(itemView.getContext(),planet.getInfo(), Toast.LENGTH_LONG).show();
+
+
+                new IOSDialog.Builder(itemView.getContext())
+                        .title(itemView.getResources().getString(R.string.About_Me))              // String or String Resource ID
+                        .message(Genger(planet.getDiameter())+":"+planet.getGravity()+"\n"+planet.getInfo())  // String or String Resource ID
+                        .positiveButtonText("Yeah, Copy")  // String or String Resource ID
+                        .negativeButtonText("No Thanks")   // String or String Resource ID
+                        .positiveClickListener(new IOSDialog.Listener() {
+                            @Override
+                            public void onClick(IOSDialog iosDialog) {
+                                iosDialog.dismiss();
+                                //Toast.makeText(context, "Thanks :)", Toast.LENGTH_SHORT).show();
+                            }
+                        }).negativeClickListener(new IOSDialog.Listener() {
+                    @Override
+                    public void onClick(IOSDialog iosDialog) {
+                        iosDialog.dismiss();
+                       // Toast.makeText(context, ":(", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                        .build()
+                        .show();
+
+
+
+
+                //imageView.setImageResource(R.mipmap.m1);
+
+                //planetAdapter.removeItem(getAdapterPosition());
+                //Toast.makeText(itemView.getContext(),planet.getInfo(), Toast.LENGTH_LONG).show();
                 //itemView.getContext().startActivity(new Intent(itemView.getContext(), Main2Activity.class));
             }
         });
+    }
+
+    private String Genger(int i){
+        if (i==0)return itemView.getResources().getString(R.string.Male);
+        return itemView.getResources().getString(R.string.Female);
     }
 
     private void  DelViod(final String id, Context context){
@@ -129,6 +198,8 @@ public class PlanetHolder extends RecyclerView.ViewHolder {
         txtDistance.setText(String.format(Locale.US, "Announced Date: %s ", getDate2String(planet.getDistanceFromSun(),"yyyy-MM-dd")));
         txtGravity.setText(String.format(Locale.US, "Year of Birth: %d ", planet.getGravity()));
         txtDiameter.setText(String.format(Locale.US, "Remaining Times: %d ", planet.getDiameter()));
+        if (planet.isRead())imageView.setImageResource(R.mipmap.m1);else imageView.setImageResource(R.mipmap.m2);
+        if (planet.isRead())txtDiameter.setVisibility(View.GONE);
 
     }
 

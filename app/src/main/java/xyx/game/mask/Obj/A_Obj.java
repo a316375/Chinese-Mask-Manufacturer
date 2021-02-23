@@ -1,5 +1,6 @@
 package xyx.game.mask.Obj;
 
+/**发布到公布栏**/
 public class A_Obj {
     public A_Obj() {}
 

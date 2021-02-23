@@ -3,26 +3,30 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Free marriage introduction</string>
-    <string name="nav_header_subtitle">Let businessmen around the world know the Chinese market </string>
+    <string name="nav_header_subtitle">Let people who want to get married know each other. </string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Product Manufacturer</string>
-    <string name="menu_gallery">Product Image</string>
-    <string name="menu_slideshow">Product Video</string>
+    <string name="menu_home">Message Room</string>
+    <string name="menu_gallery">Rule Description</string>
+    <string name="menu_slideshow">Vip Room</string>
 
 
     <string name="title_activity_main2">Main2Activity</string>
 
     <string name="My_Information">My Information</string>
+    <string name="About_Me">About Me</string>
+    <string name="Note">The information can only be obtained once a day, please select your gender correctly, change the information push, you need to set up one day in advance.</string>
     <string name="Gender">Gender</string>
     <string name="Male">Male</string>
     <string name="Female">Female</string>
     <string name="year_of_birth">Year of birth</string>
     <string name="click">click to set</string>
+    <string name="waitting">Game rules: \n 1. Each user can only get one information push per day (up to 20 pieces); \n 2. You can post one information per day; \n3. If the number of people is small, you may receive repeated messages. Make five-star reviews or share apps on Google App Play to attract more users to join.\n Thank you.</string>
     <string name="Contact_details">Contact_details</string>
     <string name="Instructions">Instructions:\n You can fill in the ID number of common social software. In order to prevent phone harassment, it is recommended that you do not fill in the phone number directly.\n You can also fill in your own advantage. The limit is 500 words.\n This information will be stored in your personal database for easy publishing and use</string>
     <string name="dialogmessge">It can be published once a day and will be automatically deleted when the number of views reaches the limit.</string>
+    <string name="rule">\n\n *Post irrelevant information, after the confirmation, the account will be permanently prohibited from posting.\n\n *You can get to know each other through this app, but you don’t know if they actually exist. If you want to date, it is recommended to go with your family. Any request for payment should be rejected. good luck.</string>
     <!-- Strings used for fragments for navigation -->
 
 

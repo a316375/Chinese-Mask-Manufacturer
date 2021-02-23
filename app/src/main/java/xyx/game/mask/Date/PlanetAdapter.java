@@ -44,7 +44,13 @@ public class PlanetAdapter extends RecyclerView.Adapter<PlanetHolder> {
 
     public void removeItem(int position){
         if (position==-1)return;
-        planets.remove(position);
+       // planets.remove(position);
         notifyItemRemoved(position);
+    }
+
+    public void upRead(int position){
+        if (position==-1)return;
+        planets.get(position).setRead(true);
+        notifyDataSetChanged();
     }
 }

@@ -2,6 +2,7 @@ package xyx.game.mask.Obj;
 
 import java.io.Serializable;
 
+/**储存个人信息**/
 public class User    {
     public User( ) {
 

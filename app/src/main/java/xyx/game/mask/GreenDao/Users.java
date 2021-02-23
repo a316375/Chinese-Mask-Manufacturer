@@ -7,7 +7,7 @@ import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class Users {
-    @Unique  //@Id(autoincrement = true)
+    @Id  @Unique  // @Id(autoincrement = true)
     private String id;
 
     private int Gender;

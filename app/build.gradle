@@ -41,6 +41,8 @@ dependencies {
 
     implementation 'com.varunjohn1990.libraries:iosdialogs4android:2.0.1'
     implementation 'org.greenrobot:greendao:3.3.0' // add library
+// jsoup HTML parser library @ https://jsoup.org/
+    implementation 'org.jsoup:jsoup:1.10.3'
 
     def billing_version = "3.0.0"
 
