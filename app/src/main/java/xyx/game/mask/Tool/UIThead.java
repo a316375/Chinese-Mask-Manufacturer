@@ -28,4 +28,10 @@ public class UIThead {
     public static void runInUIThread(Runnable r,int time){
         handler.postDelayed(r,time);
     }
+
+
+
+
+
+
 }

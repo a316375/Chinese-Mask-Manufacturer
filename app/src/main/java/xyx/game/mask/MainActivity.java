@@ -10,6 +10,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +71,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import xyx.game.mask.Obj.A_Obj;
 import xyx.game.mask.Obj.Num;
@@ -82,19 +88,49 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
+
+    private int Time = 1000*3;//周期时间
+    private Timer timer = new Timer();
+    private FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //加载动画资源文件
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
+//        fab.startAnimation(shake);
+        /**
+         * 方式二：采用timer及TimerTask结合的方法
+         */
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                fab.startAnimation(shakeAnimation(2));
+            }
+        };
+        timer.schedule(timerTask,
+                1000,//延迟1秒执行
+                Time);//周期时间
+
+
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                Snackbar.make(view, "Publish my marriage proposal to the server", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
-                showDialog();
+
+                //fab.clearAnimation();
+                timer.cancel();
+
+                checksend();
+//              if (click==2) showDialog();
+//              if (click==3) showDialog();
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -118,13 +154,25 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        SharedPreferences sharedpreferences = getBaseContext().getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
 
+
+        Integer key1 = sharedpreferences.getInt("key1", -1);
+        Integer key2 = sharedpreferences.getInt("key2", 0);
+        String key3 = sharedpreferences.getString("key3", "");
+
+
+
+        if (key1!=-1||key2!=0||key3!=null){ StartIN();}else {
+            IntentTool.startActivity(MainActivity.this,SettingActivity.class);
+            finish();}
 
 //        FirebaseDatabase database = FirebaseDatabase.getInstance();
 ////        DatabaseReference myRef = database.getReference("Male");//男人
 //    DatabaseReference myRef2 = database.getReference("Female");
 //    myRef2.removeValue();
-         StartIN();
+
+
 //        FirebaseDatabase database = FirebaseDatabase.getInstance();
 //        DatabaseReference myRef = database.getReference("Male");//男人
 //        DatabaseReference myRef2 = database.getReference("Female");
@@ -175,7 +223,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+    private void showDialog2(){
+        new IOSDialog.Builder(MainActivity.this)
+                .title("Post My Message").message(getResources().getString(R.string.stop_today)).build().show();
+    }
 
 
 
@@ -199,19 +250,20 @@ public class MainActivity extends AppCompatActivity {
 
                         switch (iosDialogButton.getId()) {
                             case 1:
+
                                 sendToShow(10);
-                                Toast.makeText(MainActivity.this, "Show 10 Times-(Free)", Toast.LENGTH_SHORT).show();
+                               // Toast.makeText(MainActivity.this, "Show 10 Times-(Free)", Toast.LENGTH_SHORT).show();
                                 break;
                             case 2:
-                                sendToShow(20);
-                                Toast.makeText(MainActivity.this, "Show 20 Times-(AD reward)", Toast.LENGTH_SHORT).show();
+                                //sendToShow(20);
+                                 Toast.makeText(MainActivity.this, "wait it", Toast.LENGTH_SHORT).show();
                                 break;
                             case 3:
-                                sendToShow(100);
+                               // sendToShow(100);
 //                                for (int i = 0; i <100; i++) {
 //                                    TestViod(i);
 //                                }
-                                Toast.makeText(MainActivity.this, "Show 100 Times-(Pay Money)", Toast.LENGTH_SHORT).show();
+                               Toast.makeText(MainActivity.this, "wait it", Toast.LENGTH_SHORT).show();
                                 break;
                         }
                     }
@@ -262,6 +314,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void checksend(){
+
+
+        SharedPreferences sharedpreferences =getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
+
+        final long today = sharedpreferences.getLong("today", 0);
+        if (today==0)return;
+
+
+
+        FirebaseAuth instance = FirebaseAuth.getInstance();
+        //String email = instance.getCurrentUser().getEmail();
+        final String uid = instance.getUid();
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference("Today");//Today
+        myRef.child(uid).child("send").orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue()==null){
+                    //myRef.child(uid).child("send").setValue(ServerValue.TIMESTAMP);
+                    showDialog();
+                }else {
+                    Long value = snapshot.getValue(Long.class);
+                    boolean sameDay = TimeSave.isSameDay(today, value, TimeZone.getDefault());
+                    if (sameDay){ showDialog2();fab.setVisibility(View.GONE);return;}
+                    showDialog();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+
+
 
     private void StartIN() {
         FirebaseAuth instance = FirebaseAuth.getInstance();
@@ -298,8 +391,8 @@ public class MainActivity extends AppCompatActivity {
 
                     //put value in view;
                 } else  {
-                    IntentTool.startActivity(MainActivity.this,SettingActivity.class);
-                    finish();
+//                    IntentTool.startActivity(MainActivity.this,SettingActivity.class);
+//                    finish();
                     //put 0 in view
                 }
             }
@@ -347,6 +440,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+            final DatabaseReference myRef2 = database.getReference("Today");//Today
+            myRef2.child(uid).child("send").setValue(ServerValue.TIMESTAMP);
+
+
+
+
+
             final DatabaseReference num = database.getReference(leibie+"Num");//拿到排队号码
 
              //num.setValue(new Num((long) 0));
@@ -376,6 +477,7 @@ public class MainActivity extends AppCompatActivity {
 
         }else {
             IntentTool.startActivity(MainActivity.this,SettingActivity.class);
+            finish();
         }
 
 
@@ -415,4 +517,23 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+
+
+
+
+
+
+    /**
+     * 晃动动画
+     * @param counts 1秒钟晃动多少下
+     * @return
+     */
+    public static Animation shakeAnimation(int counts){
+        Animation translateAnimation = new TranslateAnimation(0, 10, 0, 0);
+        translateAnimation.setInterpolator(new CycleInterpolator(counts));
+        translateAnimation.setDuration(1000);
+        return translateAnimation;
+    }
+
 }

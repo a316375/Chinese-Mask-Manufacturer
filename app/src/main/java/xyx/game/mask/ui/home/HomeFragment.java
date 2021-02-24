@@ -3,20 +3,14 @@ package xyx.game.mask.ui.home;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,8 +28,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.TimeZone;
 
 import xyx.game.mask.Date.Planet;
@@ -44,12 +36,11 @@ import xyx.game.mask.GreenDao.DaoSession;
 import xyx.game.mask.GreenDao.GreenDaoApplication;
 import xyx.game.mask.GreenDao.Users;
 import xyx.game.mask.GreenDao.UsersDao;
-import xyx.game.mask.MainActivity;
 import xyx.game.mask.Obj.Today;
-import xyx.game.mask.Obj.User;
 import xyx.game.mask.R;
 import xyx.game.mask.SettingActivity;
 import xyx.game.mask.Tool.IntentTool;
+import xyx.game.mask.Tool.TimeSave;
 import xyx.game.mask.Tool.UIThead;
 
 public class HomeFragment extends Fragment {
@@ -86,8 +77,6 @@ public class HomeFragment extends Fragment {
 
        // checkSetting();
         checkSetting();
-
-
 
 
 
@@ -155,6 +144,7 @@ public class HomeFragment extends Fragment {
                 if (snapshot.getValue()!=null)
                 {
                     Iterable<DataSnapshot> children = snapshot.getChildren();
+                    adapter.addHead(false);//网络请求的不显示head
 
                     for (DataSnapshot ds:children){
 
@@ -177,6 +167,7 @@ public class HomeFragment extends Fragment {
                         });
 
 
+
 //                        if (new Random().nextInt(3)==1){
                             Planet   planet = new Planet(key, id, year, times,info,false);
                             planetArrayList.add(planet);
@@ -190,7 +181,7 @@ public class HomeFragment extends Fragment {
 
                     }
 
-
+                    adapter.addFoot(planetArrayList.size());
                     adapter.notifyDataSetChanged();
 
 //                    for(DataSnapshot ds : snapshot.getChildren()) {
@@ -240,6 +231,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadFromSQL(){
+        adapter.addHead(true);
         ArrayList<Users> allCategory = getAllCategory();
        // List<Users> joes = usersDao.queryBuilder().list();
 
@@ -249,6 +241,9 @@ public class HomeFragment extends Fragment {
             Planet   planet = new Planet(users.getId(), users.getTime(), users.getYear(), 0,users.getInfo(),users.getIsread());
             planetArrayList.add(planet);
         }
+
+        adapter.addFoot(planetArrayList.size());
+
         adapter.notifyDataSetChanged();
     }
 
@@ -274,6 +269,7 @@ public class HomeFragment extends Fragment {
             public void run() {
                 try {
                     time = getTime();
+
                     Log.v("---","Today------"+time);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -292,6 +288,44 @@ public class HomeFragment extends Fragment {
 
     //核查今天是否刷新过
     private void upToday(final Long time) {
+
+        //储存今天日期：
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences sharedpreferences =getActivity().getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putLong("today", time);
+                editor.commit();
+
+            }
+        }).start();
+
+
+        SharedPreferences sharedpreferences =getActivity().getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
+
+        long today = sharedpreferences.getLong("today", 0);
+        if (today!=0){
+            if (TimeSave.isSameDay(today,time,TimeZone.getDefault())){
+                UIThead.runInUIThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        loadFromSQL();
+                        progressDialog.dismiss();
+                    }
+                });
+
+                }
+
+        }else {
+            startLoad(time);}
+
+
+
+    }
+
+    private void startLoad(final Long time) {
         FirebaseAuth instance = FirebaseAuth.getInstance();
         //String email = instance.getCurrentUser().getEmail();
         final String uid = instance.getUid();
@@ -315,7 +349,7 @@ public class HomeFragment extends Fragment {
 //                        Log.v("----","Now is"+time);
 //                        Log.v("----","But is"+load);
 //                    }
-                    boolean sameDay = isSameDay(time, load, TimeZone.getDefault());
+                    boolean sameDay = TimeSave.isSameDay(time, load, TimeZone.getDefault());
                     Log.v("----","SameDay="+sameDay);
                     if (!sameDay){
                         del_All();
@@ -359,14 +393,7 @@ public class HomeFragment extends Fragment {
     }
 
 
-    public static boolean isSameDay(long millis1, long millis2, TimeZone timeZone) {
-        long interval = millis1 - millis2;
-        return interval < 86400000 && interval > -86400000 && millis2Days(millis1, timeZone) == millis2Days(millis2, timeZone);
-    }
 
-    private static long millis2Days(long millis, TimeZone timeZone) {
-        return (((long) timeZone.getOffset(millis)) + millis) / 86400000;
-    }
 
 
 

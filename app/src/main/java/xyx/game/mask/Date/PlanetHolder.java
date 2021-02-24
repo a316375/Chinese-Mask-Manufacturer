@@ -1,6 +1,8 @@
 package xyx.game.mask.Date;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -10,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -39,14 +40,25 @@ public class PlanetHolder extends RecyclerView.ViewHolder {
     private Planet planet;
     private PlanetAdapter planetAdapter;
 
+
     private UsersDao usersDao;
 
 
 
 
-    public PlanetHolder(final View itemView, final PlanetAdapter planetAdapter) {
+
+    public PlanetHolder(final View itemView, final PlanetAdapter planetAdapter ) {
         super(itemView);
+
+
+
+
+
+
+
         this.planetAdapter=planetAdapter;
+
+
         txtName = itemView.findViewById(R.id.textView0);
         txtDistance = itemView.findViewById(R.id.textView2);
         txtGravity = itemView.findViewById(R.id.textView3);
@@ -63,6 +75,7 @@ public class PlanetHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
 
 
+
                 planetAdapter.upRead(getAdapterPosition());
 
 //
@@ -76,7 +89,9 @@ public class PlanetHolder extends RecyclerView.ViewHolder {
                 UIThead.runInSubThread(new Runnable() {
                     @Override
                     public void run() {
+
                         Users user = usersDao.queryBuilder() .where(UsersDao.Properties.Id.eq(planet.getPlanetName())).build().unique();
+                        if (user==null)return;
                         user.setIsread(true);
                         Log.v("------",user.getId());
                         //String id, int Gender, int Year, String info, long time, boolean isread
@@ -91,12 +106,18 @@ public class PlanetHolder extends RecyclerView.ViewHolder {
                         .title(itemView.getResources().getString(R.string.About_Me))              // String or String Resource ID
                         .message(Genger(planet.getDiameter())+":"+planet.getGravity()+"\n"+planet.getInfo())  // String or String Resource ID
                         .positiveButtonText("Yeah, Copy")  // String or String Resource ID
-                        .negativeButtonText("No Thanks")   // String or String Resource ID
+                        .negativeButtonText("Close")   // String or String Resource ID
                         .positiveClickListener(new IOSDialog.Listener() {
                             @Override
                             public void onClick(IOSDialog iosDialog) {
                                 iosDialog.dismiss();
-                                //Toast.makeText(context, "Thanks :)", Toast.LENGTH_SHORT).show();
+                                //获取剪贴板管理器：
+                                ClipboardManager cm = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                                 // 创建普通字符型ClipData
+                                ClipData mClipData = ClipData.newPlainText("Label", planet.getInfo());
+                                  // 将ClipData内容放到系统剪贴板里。
+                                cm.setPrimaryClip(mClipData);
+                                Toast.makeText(itemView.getContext(), "Copy Success", Toast.LENGTH_SHORT).show();
                             }
                         }).negativeClickListener(new IOSDialog.Listener() {
                     @Override
@@ -118,6 +139,7 @@ public class PlanetHolder extends RecyclerView.ViewHolder {
                 //itemView.getContext().startActivity(new Intent(itemView.getContext(), Main2Activity.class));
             }
         });
+
     }
 
     private String Genger(int i){
@@ -200,6 +222,14 @@ public class PlanetHolder extends RecyclerView.ViewHolder {
         txtDiameter.setText(String.format(Locale.US, "Remaining Times: %d ", planet.getDiameter()));
         if (planet.isRead())imageView.setImageResource(R.mipmap.m1);else imageView.setImageResource(R.mipmap.m2);
         if (planet.isRead())txtDiameter.setVisibility(View.GONE);
+
+
+
+
+
+
+
+
 
     }
 

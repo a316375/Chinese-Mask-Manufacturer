@@ -27,6 +27,9 @@
     <string name="Instructions">Instructions:\n You can fill in the ID number of common social software. In order to prevent phone harassment, it is recommended that you do not fill in the phone number directly.\n You can also fill in your own advantage. The limit is 500 words.\n This information will be stored in your personal database for easy publishing and use</string>
     <string name="dialogmessge">It can be published once a day and will be automatically deleted when the number of views reaches the limit.</string>
     <string name="rule">\n\n *Post irrelevant information, after the confirmation, the account will be permanently prohibited from posting.\n\n *You can get to know each other through this app, but you don’t know if they actually exist. If you want to date, it is recommended to go with your family. Any request for payment should be rejected. good luck.</string>
+    <string name="stop_today">\n The message has been sent today, please come back another day</string>
+    <string name="zero">Sorry, the number of users is small,\n and all conference room messages have been sent, \n so the message received is 0.\n Please share with more people, \n but you can still post today. \n Please come back tomorrow.</string>
+    <string name="loadSQL">Today’s requests have been exhausted, the following is the information in the local storage.</string>
     <!-- Strings used for fragments for navigation -->
 
 

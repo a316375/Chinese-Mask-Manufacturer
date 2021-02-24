@@ -1,6 +1,9 @@
 package xyx.game.mask.Date;
 
 public class Planet {
+
+
+
     private String planetName;
     private Long distanceFromSun;
     private int gravity;
