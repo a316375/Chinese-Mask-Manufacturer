@@ -1,69 +1,75 @@
 package xyx.game.mask.Obj;
 
+import androidx.annotation.Keep;
+
+import java.io.Serializable;
+
 /**发布到公布栏**/
-public class A_Obj {
+@Keep
+public class A_Obj   {
+
     public A_Obj() {}
 
-    private String Info;private Long ID;
-    private Integer Times,Year,Gender;
+    private String info;private Long id;
+    private Integer times; private Integer year; private Integer gender;
 
 
-    public A_Obj(String info, Integer times, Long ID, Integer year, Integer gender) {
-        Info = info;
-        Times = times;
-        this.ID = ID;
-        Year = year;
-        Gender = gender;
+    public A_Obj(String info, Integer times, Long id, Integer year, Integer gender) {
+        this.info = info;
+        this.times = times;
+        this.id = id;
+        this.year = year;
+        this.gender = gender;
     }
 
     @Override
     public String toString() {
         return "A_Obj{" +
-                "Info='" + Info + '\'' +
-                ", ID='" + ID + '\'' +
-                ", Times=" + Times +
-                ", Year=" + Year +
-                ", Gender=" + Gender +
+                "info='" + info + '\'' +
+                ", id=" + id +
+                ", times=" + times +
+                ", year=" + year +
+                ", gender=" + gender +
                 '}';
     }
 
     public String getInfo() {
-        return Info;
+        return info;
     }
 
     public void setInfo(String info) {
-        Info = info;
+        this.info = info;
     }
 
-    public Long getID() {
-        return ID;
+    public Long getId() {
+        return id;
     }
 
-    public void setID(Long ID) {
-        this.ID = ID;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Integer getTimes() {
-        return Times;
+        return times;
     }
 
     public void setTimes(Integer times) {
-        Times = times;
+        this.times = times;
     }
 
     public Integer getYear() {
-        return Year;
+        return year;
     }
 
     public void setYear(Integer year) {
-        Year = year;
+        this.year = year;
     }
 
     public Integer getGender() {
-        return Gender;
+        return gender;
     }
 
     public void setGender(Integer gender) {
-        Gender = gender;
+        this.gender = gender;
     }
 }

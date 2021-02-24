@@ -120,9 +120,7 @@ public class LoginActivity extends AppCompatActivity {
                    // int followersCount = dataSnapshot.getValue(Integer.class);
                     final User user=dataSnapshot.getValue(User.class);
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
+
                             SharedPreferences sharedpreferences = getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedpreferences.edit();
                             editor.putInt("key1", user.getGender());
@@ -130,8 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("key3", user.getString());
                             editor.commit();
 
-                        }
-                    }).start();
+
 
 
 

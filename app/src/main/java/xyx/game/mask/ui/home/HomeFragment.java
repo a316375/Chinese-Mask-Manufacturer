@@ -36,6 +36,8 @@ import xyx.game.mask.GreenDao.DaoSession;
 import xyx.game.mask.GreenDao.GreenDaoApplication;
 import xyx.game.mask.GreenDao.Users;
 import xyx.game.mask.GreenDao.UsersDao;
+import xyx.game.mask.Obj.A_Obj;
+import xyx.game.mask.Obj.Load;
 import xyx.game.mask.Obj.Today;
 import xyx.game.mask.R;
 import xyx.game.mask.SettingActivity;
@@ -49,6 +51,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     private PlanetAdapter adapter;
     private ArrayList<Planet> planetArrayList;
+    private DatabaseReference myRef;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -135,7 +138,8 @@ public class HomeFragment extends Fragment {
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference(leibie);//男人
+        //男人
+        myRef = database.getReference(leibie);
 
         //只能读取20条
         myRef.orderByKey().limitToFirst(20).addListenerForSingleValueEvent(new ValueEventListener(){
@@ -143,36 +147,54 @@ public class HomeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue()!=null)
                 {
+
+
                     Iterable<DataSnapshot> children = snapshot.getChildren();
+
+
+
                     adapter.addHead(false);//网络请求的不显示head
 
                     for (DataSnapshot ds:children){
+//                        Log.v("--tuxue--",ds.toString());
+//                        Log.v("--tuxue2--",ds.getValue().toString());
+//                        Log.v("--tuxue3--",ds.getKey().toString());
 
 
-                        final String key = ds.getKey();
-                        Long id = Long.valueOf(ds.child("id").getValue(Long.class));
-                        final Integer times = ds.child("times").getValue(Integer.class);
-                        Integer year = ds.child("year").getValue(Integer.class);
-                        String info = ds.child("info").getValue(String.class);
-                        Integer gender=ds.child("gender").getValue(Integer.class);
+                        A_Obj mvalue = ds.getValue(A_Obj.class);
+//                        Log.v("--tuxue4--",mvalue.toString());
+                        String dsKey = ds.getKey();
 
-                        UIThead.runInSubThread(new Runnable() {
-                            @Override
-                            public void run() {
 
-                                if (times<=1){myRef.child(key).removeValue();}
-                                else
-                                { myRef.child(key).child("times").setValue(times-1);}
-                            }
-                        });
 
+//                        final String key = ds.getKey();
+//
+//                        Long id = Long.valueOf(ds.child("id").getValue(Long.class));
+//                        final Integer times = ds.child("times").getValue(Integer.class);
+//                        Integer year = ds.child("year").getValue(Integer.class);
+//                        String info = ds.child("info").getValue(String.class);
+//                        Integer gender=ds.child("gender").getValue(Integer.class);
+
+//                        UIThead.runInSubThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//
+//                                if (times<=1){myRef.child(key).removeValue();}
+//                                else
+//                                { myRef.child(key).child("times").setValue(times-1);}
+//                            }
+//                        });
+                        if (mvalue.getTimes()<=1){
+                            myRef.child(dsKey).removeValue();}
+                        else
+                        { myRef.child(dsKey).child("times").setValue(mvalue.getTimes()-1);}
 
 
 //                        if (new Random().nextInt(3)==1){
-                            Planet   planet = new Planet(key, id, year, times,info,false);
+                            Planet   planet = new Planet(dsKey, mvalue.getId(), mvalue.getYear(), mvalue.getTimes(),mvalue.getInfo(),false);
                             planetArrayList.add(planet);
                          //String id, int Gender, int Year, String info, long time,   boolean isread
-                            add(new Users(key,gender,year,info,id,false));
+                            add(new Users(dsKey,mvalue.getGender(),mvalue.getYear(),mvalue.getInfo(),mvalue.getId(),false));
 
 
 

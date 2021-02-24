@@ -23,6 +23,22 @@
           }
         },
         {
+          "client_id": "1074645256240-8skcc941afj9rd91r1p3lf9tqm6prbvc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "xyx.game.mask",
+            "certificate_hash": "47c4b81efb01828dcb32d140a07e85d2fa9038d9"
+          }
+        },
+        {
+          "client_id": "1074645256240-jgeusdo9kf46g2nsfrr28cllc0t1l9ui.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "xyx.game.mask",
+            "certificate_hash": "823d6984a37d6b8699e42693b189a4da501a2037"
+          }
+        },
+        {
           "client_id": "1074645256240-7m9s2bj1ta8vebebip0mbqfa4m39o77a.apps.googleusercontent.com",
           "client_type": 3
         }

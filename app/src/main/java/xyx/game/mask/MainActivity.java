@@ -371,9 +371,7 @@ public class MainActivity extends AppCompatActivity {
                     // int followersCount = dataSnapshot.getValue(Integer.class);
                     final User user=dataSnapshot.getValue(User.class);
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
+
                             SharedPreferences sharedpreferences = getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedpreferences.edit();
                             editor.putInt("key1", user.getGender());
@@ -381,8 +379,7 @@ public class MainActivity extends AppCompatActivity {
                             editor.putString("key3", user.getString());
                             editor.commit();
 
-                        }
-                    }).start();
+
 
 
 
@@ -455,6 +452,7 @@ public class MainActivity extends AppCompatActivity {
             num.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.getValue()==null)return;
                     Num value = snapshot.getValue(Num.class);
                     if (value.getNum()>=Long.MAX_VALUE/10)value.setNum(1L);
                     num.setValue(new Num(value.getNum()+1));
@@ -462,6 +460,11 @@ public class MainActivity extends AppCompatActivity {
                     //Log.v("-------",String.valueOf(value));
                     myRef.child(String.valueOf(value.getNum())+uid.substring(0,8)).setValue(a_obj);
                     myRef.child(String.valueOf(value.getNum())+uid.substring(0,8)).child("id").setValue(ServerValue.TIMESTAMP);
+
+                    fab.setVisibility(View.GONE);
+//                    Snackbar.make(fab.getRootView(), "Successful", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                    Toast.makeText(MainActivity.this, "Successful", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

@@ -1,42 +1,56 @@
 package xyx.game.mask.Obj;
 
+import androidx.annotation.Keep;
+
 import java.io.Serializable;
 
 /**储存个人信息**/
+@Keep
 public class User    {
     public User( ) {
 
     }
 
-    int Gender;
-    int Year;
+    int gender;
+    int year;
     String string;
     long time;
     String email;
 
     public User(int gender, int year, String string, long time,String email) {
         this.email=email;
-        Gender = gender;
-        Year = year;
+        this.gender = gender;
+        this.year = year;
         this.string = string;
         this.time = time;
 
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "gender=" + gender +
+                ", year=" + year +
+                ", string='" + string + '\'' +
+                ", time=" + time +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
     public int getGender() {
-        return Gender;
+        return gender;
     }
 
     public void setGender(int gender) {
-        Gender = gender;
+        this.gender = gender;
     }
 
     public int getYear() {
-        return Year;
+        return year;
     }
 
     public void setYear(int year) {
-        Year = year;
+        this.year = year;
     }
 
     public String getString() {

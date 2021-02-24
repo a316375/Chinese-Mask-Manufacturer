@@ -1,7 +1,9 @@
 package xyx.game.mask.Obj;
 
+import java.io.Serializable;
+
 /**一天发布一次+一天加载一次**/
-public class Today {
+public class Today implements Serializable {
     private Long send;
     private Long load;
 
