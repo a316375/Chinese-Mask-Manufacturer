@@ -1,5 +1,6 @@
 package xyx.game.mask;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,18 @@ import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
+import com.google.android.gms.ads.initialization.AdapterStatus;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -74,16 +87,19 @@ import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import xyx.game.mask.Billing.BillTest;
+import xyx.game.mask.Billing.Billing;
 import xyx.game.mask.Obj.A_Obj;
 import xyx.game.mask.Obj.Num;
 import xyx.game.mask.Obj.Today;
 import xyx.game.mask.Obj.User;
 import xyx.game.mask.Tool.IntentTool;
+import xyx.game.mask.Tool.Phone;
 import xyx.game.mask.Tool.TimeSave;
 import xyx.game.mask.Tool.UIAlertDialog;
 import xyx.game.mask.Tool.UIThead;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Billing {
 
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -92,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
     private int Time = 1000*3;//周期时间
     private Timer timer = new Timer();
     private FloatingActionButton fab;
+    private TimerTask timerTask;
+    private String string;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,16 +126,7 @@ public class MainActivity extends AppCompatActivity {
         /**
          * 方式二：采用timer及TimerTask结合的方法
          */
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                fab.startAnimation(shakeAnimation(2));
-            }
-        };
-        timer.schedule(timerTask,
-                1000,//延迟1秒执行
-                Time);//周期时间
-
+        timerTask_fab();
 
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -125,8 +135,12 @@ public class MainActivity extends AppCompatActivity {
 //                Snackbar.make(view, "Publish my marriage proposal to the server", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
 
+                if (mRewardedAd==null){
+                    requsetAD(string); }
                 //fab.clearAnimation();
-                timer.cancel();
+                if (timer!=null){ timer.cancel();
+                    timer = null;}
+
 
                 checksend();
 //              if (click==2) showDialog();
@@ -216,11 +230,119 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
 
+        SharedPreferences ad =getSharedPreferences("MyAD", Context.MODE_PRIVATE);
+        string = ad.getString("AD", "0000");
+        if (string.equals("0000"))return;
+        if(Phone.notHasBlueTooth() ||Phone.notHasLightSensorManager(this)
+          ||Phone.isFeatures() ||Phone.checkIsNotRealPhone() ||Phone.checkPipes()){
+            return;
+        }
+        //加载AD
+        initAD(string);
 
     }
 
+    private void timerTask_fab() {
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                fab.startAnimation(shakeAnimation(2));
+            }
+        };
+        timer.schedule(timerTask,
+                1000,//延迟1秒执行
+                Time);//周期时间
+    }
+
+    //private String YOUR_ADMOB_APP_ID="ca-app-pub-3940256099942544~3347511713";
+    private RewardedAd mRewardedAd;
+    private void initAD(String string) {
+        // ...
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        //MobileAds.initialize(this, YOUR_ADMOB_APP_ID);
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+
+                Map<String, AdapterStatus> adapterStatusMap = initializationStatus.getAdapterStatusMap();
+                for (Map.Entry<String, AdapterStatus> entry : adapterStatusMap.entrySet()) {
+
+                    Log.v("--ADMOB",entry.getKey()+"----"+entry.getValue().getDescription()+"-"+entry.getValue().getInitializationState().name());
+                }
+
+            }
+        });
 
 
+        requsetAD(string);//请求AD
+
+
+    }
+
+    private void requsetAD(String string) {
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        RewardedAd.load(this, string,
+                adRequest, new RewardedAdLoadCallback(){
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error.
+                        Log.d("TAG", loadAdError.getMessage());
+                        mRewardedAd = null;
+                    }
+
+                    @Override
+                    public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
+                        mRewardedAd = rewardedAd;
+                        setAD_load(mRewardedAd);
+                        Log.d("TAG", "AdLoaded");
+                    }
+                });
+    }
+
+    private void setAD_load(RewardedAd mRewardedAd) {
+
+        this.mRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+            @Override
+            public void onAdShowedFullScreenContent() {
+                // Called when ad is shown.
+                Log.d("TAG", "Ad was shown.");
+                MainActivity.this.mRewardedAd = null;
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                // Called when ad fails to show.
+                Log.d("TAG", "Ad failed to show.");
+            }
+
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                // Called when ad is dismissed.
+                // Don't forget to set the ad reference to null so you
+                // don't show the ad a second time.
+                Log.d("TAG", "Ad was dismissed.");
+            }
+        });
+    }
+
+    private void  showAD(){
+
+        if (mRewardedAd != null) {
+
+        mRewardedAd.show(MainActivity.this, new OnUserEarnedRewardListener() {
+            @Override
+            public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                // Handle the reward.
+                Log.d("TAG", "The user earned the reward.");
+                int rewardAmount = rewardItem.getAmount();
+                String rewardType = rewardItem.getType();
+                sendToShow(5*4);
+            }
+        });
+    } else {
+        Log.d("TAG", "The rewarded ad wasn't ready yet.");
+    }}
 
 
     private void showDialog2(){
@@ -230,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+    String sorry = "Sorry,AD is Null,try it Again.";
     private void showDialog() {
 
 
@@ -251,19 +373,26 @@ public class MainActivity extends AppCompatActivity {
                         switch (iosDialogButton.getId()) {
                             case 1:
 
-                                sendToShow(10);
+                                sendToShow(5*2);
                                // Toast.makeText(MainActivity.this, "Show 10 Times-(Free)", Toast.LENGTH_SHORT).show();
                                 break;
                             case 2:
+                                showAD();
+                                if (mRewardedAd==null){requsetAD(string);
+                                  if (timer==null)timer=new Timer();
+                                     timerTask_fab();
+                                    Toast.makeText(MainActivity.this, sorry, Toast.LENGTH_LONG).show(); return;}
                                 //sendToShow(20);
-                                 Toast.makeText(MainActivity.this, "wait it", Toast.LENGTH_SHORT).show();
+                                // Toast.makeText(MainActivity.this, "wait it", Toast.LENGTH_SHORT).show();
                                 break;
                             case 3:
+
+                                new BillTest(MainActivity.this,MainActivity.this).start(BillTest.vip1);
                                // sendToShow(100);
 //                                for (int i = 0; i <100; i++) {
 //                                    TestViod(i);
 //                                }
-                               Toast.makeText(MainActivity.this, "wait it", Toast.LENGTH_SHORT).show();
+                               //Toast.makeText(MainActivity.this, "wait it", Toast.LENGTH_SHORT).show();
                                 break;
                         }
                     }
@@ -454,7 +583,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.getValue()==null)return;
                     Num value = snapshot.getValue(Num.class);
-                    if (value.getNum()>=Long.MAX_VALUE/10)value.setNum(1L);
+                    if (value.getNum()>=Long.MAX_VALUE/10)value.setNum(1000L);
                     num.setValue(new Num(value.getNum()+1));
                     A_Obj a_obj=new A_Obj(key3,i,id,key2,key1);
                     //Log.v("-------",String.valueOf(value));
@@ -539,4 +668,18 @@ public class MainActivity extends AppCompatActivity {
         return translateAnimation;
     }
 
+    @Override
+    public void OK(String string) {
+        if (string.equals(BillTest.vip1))sendToShow(5*20);
+    }
+
+    @Override
+    public void Cance() {
+
+    }
+
+    @Override
+    public void Error() {
+
+    }
 }

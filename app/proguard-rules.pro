@@ -161,3 +161,12 @@
     -keep  public  class xyx.game.mask.GreenDao.Users
 
 -keep class com.google.firebase.example.fireeats.model$** { *; }
+
+
+-keep public class com.google.firebase.analytics.FirebaseAnalytics {
+    public *;
+}
+
+-keep public class com.google.android.gms.measurement.AppMeasurement {
+    public *;
+}

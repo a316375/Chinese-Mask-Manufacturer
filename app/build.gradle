@@ -34,6 +34,7 @@ android {
 
     buildTypes {
         release  {
+      //   debug  {
             minifyEnabled true
 
             // Enables resource shrinking, which is performed by the
@@ -78,4 +79,6 @@ dependencies {
 
     // Also declare the dependency for the Google Play services library and specify its version
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
+
+    implementation 'com.google.firebase:firebase-ads:18.0.0'
 }

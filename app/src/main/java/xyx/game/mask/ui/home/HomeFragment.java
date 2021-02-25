@@ -37,7 +37,6 @@ import xyx.game.mask.GreenDao.GreenDaoApplication;
 import xyx.game.mask.GreenDao.Users;
 import xyx.game.mask.GreenDao.UsersDao;
 import xyx.game.mask.Obj.A_Obj;
-import xyx.game.mask.Obj.Load;
 import xyx.game.mask.Obj.Today;
 import xyx.game.mask.R;
 import xyx.game.mask.SettingActivity;
@@ -121,7 +120,7 @@ public class HomeFragment extends Fragment {
         checkToday();
 
     }
-    private void upData() {
+    private void upData(final Long time) {
 //        SharedPreferences sharedpreferences = getActivity().getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
 //        Integer key1 = sharedpreferences.getInt("key1", -1);
 //
@@ -202,6 +201,22 @@ public class HomeFragment extends Fragment {
 
 
                     }
+
+
+
+                    if (planetArrayList.size()!=0){ //储存今天日期：
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                SharedPreferences sharedpreferences =getActivity().getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedpreferences.edit();
+                                editor.putLong("today", time);
+                                editor.commit();
+
+                            }
+                        }).start();}
+
+
 
                     adapter.addFoot(planetArrayList.size());
                     adapter.notifyDataSetChanged();
@@ -311,17 +326,7 @@ public class HomeFragment extends Fragment {
     //核查今天是否刷新过
     private void upToday(final Long time) {
 
-        //储存今天日期：
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SharedPreferences sharedpreferences =getActivity().getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putLong("today", time);
-                editor.commit();
 
-            }
-        }).start();
 
 
         SharedPreferences sharedpreferences =getActivity().getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
@@ -347,7 +352,10 @@ public class HomeFragment extends Fragment {
 
     }
 
+
+
     private void startLoad(final Long time) {
+
         FirebaseAuth instance = FirebaseAuth.getInstance();
         //String email = instance.getCurrentUser().getEmail();
         final String uid = instance.getUid();
@@ -357,14 +365,17 @@ public class HomeFragment extends Fragment {
         myRef.child(uid).orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 progressDialog.dismiss();
                 if (snapshot.getValue()==null){
                     //未注册过的用户
                     Today today=new Today();
                     myRef.child(uid).setValue(today);
                     myRef.child(uid).child("load").setValue(ServerValue.TIMESTAMP);
-                    upData();
+                    upData(time);
                 }else {
+
+
                     Today value = snapshot.getValue(Today.class);
                     Long load = value.getLoad();
 //                    if (time!=load){
@@ -376,7 +387,7 @@ public class HomeFragment extends Fragment {
                     if (!sameDay){
                         del_All();
                         myRef.child(uid).child("load").setValue(ServerValue.TIMESTAMP);//刷新记录
-                        upData();
+                        upData(time);
                     }else {
                         //去加载本地数据库
                         loadFromSQL();
@@ -392,6 +403,26 @@ public class HomeFragment extends Fragment {
                 progressDialog.setMessage("Error Cause Database");
             }
         });
+        final DatabaseReference ad = database.getReference("AD");//today
+        ad.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                String string= snapshot.getValue(String.class);
+                SharedPreferences sharedpreferences =getActivity().getSharedPreferences("MyAD", Context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = sharedpreferences.edit();
+                edit.putString("AD",string);
+                edit.commit();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
     }
 
     private long getTime() throws Exception {
