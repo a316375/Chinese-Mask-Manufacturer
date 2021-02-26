@@ -132,7 +132,7 @@
 -keep class com.varunjohn1990.iosdialogs4android.IOSDialog$** { *; }
 
 
-
+#-keep public class xyx.game.mask.Tool.TimeSave{*;}
      # Add this global rule
 #    -keepattributes Signature
 
@@ -170,3 +170,4 @@
 -keep public class com.google.android.gms.measurement.AppMeasurement {
     public *;
 }
+

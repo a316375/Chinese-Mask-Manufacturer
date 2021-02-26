@@ -236,9 +236,10 @@ public class MainActivity extends AppCompatActivity implements Billing {
         if(Phone.notHasBlueTooth() ||Phone.notHasLightSensorManager(this)
           ||Phone.isFeatures() ||Phone.checkIsNotRealPhone() ||Phone.checkPipes()){
             return;
-        }
+        }else{
         //加载AD
         initAD(string);
+        }
 
     }
 

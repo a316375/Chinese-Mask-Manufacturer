@@ -313,7 +313,7 @@ public class HomeFragment extends Fragment {
                     Log.v("---","Today-Fail-----"+e.toString());
                 }
                 finally {
-                    if (time==0)return;
+                    if (time==0){ Log.v("---","Today-Fail---------");return;}
                     upToday(time);
                 }
             }
@@ -326,27 +326,32 @@ public class HomeFragment extends Fragment {
     //核查今天是否刷新过
     private void upToday(final Long time) {
 
-
+        Log.v("---","Today start-----");
 
 
         SharedPreferences sharedpreferences =getActivity().getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
 
         long today = sharedpreferences.getLong("today", 0);
+        Log.v("---","Today  ---"+today);
         if (today!=0){
+            Log.v("---","Today !=0---"+TimeSave.isSameDay(today,time,TimeZone.getDefault()));
             if (TimeSave.isSameDay(today,time,TimeZone.getDefault())){
+
+
                 UIThead.runInUIThread(new Runnable() {
                     @Override
                     public void run() {
-
+                        Log.v("---","Today loadFromSQL---");
                         loadFromSQL();
                         progressDialog.dismiss();
                     }
                 });
 
-                }
+                }else {
+                Log.v("---","Today start--startLoad---");
+                startLoad(time);}
 
-        }else {
-            startLoad(time);}
+        }
 
 
 
